@@ -1,0 +1,145 @@
+<aside class="flex flex-col w-[35%] h-full bg-[#1f2937] border-l border-[#374151] shrink-0">
+
+  <!-- Tab bar -->
+  <div class="flex border-b border-[#374151] shrink-0">
+    <button id="tab-feed" data-active="false" onclick="switchTab('feed')"
+      class="rp-tab px-4 py-3 text-sm font-semibold">CQL Feed</button>
+    <button id="tab-schema" data-active="true" onclick="switchTab('schema')"
+      class="rp-tab px-4 py-3 text-sm font-semibold">Schema</button>
+  </div>
+
+  <!-- CQL Feed panel (hidden by default) -->
+  <div id="panel-feed" class="flex flex-col flex-1 min-h-0 hidden">
+    <p class="px-4 py-2 text-xs text-[#9ca3af] shrink-0">Queries sent to ScyllaDB</p>
+    <!-- Feed — entries appended here via hx-swap-oob; pre-populated on full-page render -->
+    <div id="cql-feed" class="flex-1 overflow-y-auto">
+      <% if (typeof cqlQueries !== 'undefined' && cqlQueries.length > 0) { %>
+      <div class="cql-batch">
+        <% cqlQueries.forEach(function(html) { %><%- html %><% }); %>
+      </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Schema panel -->
+  <div id="panel-schema" class="flex-1 overflow-y-auto p-3">
+    <pre class="cql-pre"><%- schemaHtml %></pre>
+  </div>
+
+  <!-- Footer -->
+  <div class="px-4 py-3 border-t border-[#374151] shrink-0 flex items-center gap-2">
+    <span class="inline-block w-2 h-2 rounded-full bg-[#59c1cc] animate-pulse shrink-0"></span>
+    <p class="text-xs text-[#9ca3af]">ScyllaDB Cloud</p>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      document.getElementById('panel-feed').classList.toggle('hidden', tab !== 'feed');
+      document.getElementById('panel-schema').classList.toggle('hidden', tab !== 'schema');
+      document.getElementById('tab-feed').dataset.active = tab === 'feed' ? 'true' : 'false';
+      document.getElementById('tab-schema').dataset.active = tab === 'schema' ? 'true' : 'false';
+    }
+    document.addEventListener('htmx:afterSettle', function () {
+      var feed = document.getElementById('cql-feed');
+      if (feed && !document.getElementById('panel-feed').classList.contains('hidden')) {
+        feed.scrollTop = feed.scrollHeight;
+      }
+    });
+  </script>
+
+</aside>
+
+<style>
+  .rp-tab {
+    border-bottom: 2px solid transparent;
+    color: #9ca3af;
+    background: transparent;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .rp-tab[data-active="true"] {
+    color: #59c1cc;
+    border-bottom-color: #59c1cc;
+  }
+  .rp-tab:hover:not([data-active="true"]) {
+    color: #d1d5db;
+  }
+  .cql-entry {
+    padding: 8px 12px;
+    border-bottom: 1px solid #374151;
+  }
+  .cql-time {
+    display: block;
+    font-size: 10px;
+    color: #6b7280;
+    margin-bottom: 2px;
+    font-family: ui-monospace, monospace;
+  }
+  .cql-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6dd5de;
+    margin-bottom: 5px;
+  }
+  .cql-pre {
+    margin: 0;
+    font-size: 11px;
+    font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #0d1117;
+    color: #e6f7f9;
+    border: 1px solid #374151;
+    border-radius: 4px;
+    padding: 8px 10px;
+    line-height: 1.5;
+  }
+  .cql-result-wrap {
+    margin-top: 6px;
+    overflow-x: auto;
+    border-radius: 4px;
+    border: 1px solid #374151;
+  }
+  .cql-result-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+    font-family: ui-monospace, monospace;
+    color: #d1d5db;
+  }
+  .cql-result-table thead th {
+    background: #111827;
+    color: #59c1cc;
+    padding: 3px 6px;
+    text-align: left;
+    border-bottom: 1px solid #374151;
+    white-space: nowrap;
+  }
+  .cql-result-table tbody td {
+    padding: 3px 6px;
+    border-bottom: 1px solid #1f2937;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cql-result-none {
+    margin-top: 5px;
+    font-size: 10px;
+    color: #6b7280;
+    font-style: italic;
+  }
+  .cql-result-more {
+    padding: 2px 6px 4px;
+    font-size: 10px;
+    color: #6b7280;
+  }
+  .cql-batch {
+    border-top: 2px solid #59c1cc;
+    margin-top: 2px;
+  }
+  .cql-batch:first-child {
+    border-top: none;
+    margin-top: 0;
+  }
+</style>

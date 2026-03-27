@@ -1,0 +1,99 @@
+<!-- Messages scroll area -->
+<div
+  id="messages"
+  class="flex-1 overflow-y-auto px-4 py-6 space-y-1"
+>
+  <% if (messages.length === 0) { %>
+    <div class="flex items-center justify-center h-full text-[#9ca3af] text-sm select-none">
+      <div class="text-center space-y-2">
+        <p class="text-3xl">🤖</p>
+        <p>Send a message to start the conversation</p>
+      </div>
+    </div>
+  <% } else { %>
+    <% messages.forEach(function(m) { %>
+      <% if (m.role === 'human') { %>
+        <div class="chat chat-end">
+          <div class="chat-bubble chat-bubble-primary text-sm whitespace-pre-wrap"><%- m.content %></div>
+        </div>
+      <% } else { %>
+        <div class="chat chat-start">
+          <div class="chat-avatar">
+            <div class="avatar placeholder">
+              <div class="bg-[#59c1cc] text-white rounded-full w-8">
+                <span class="text-xs">AI</span>
+              </div>
+            </div>
+          </div>
+          <div class="chat-bubble bg-[#1a3a3e] text-[#e6f7f9] text-sm whitespace-pre-wrap"><%- m.content %></div>
+        </div>
+      <% } %>
+    <% }); %>
+  <% } %>
+</div>
+
+<!-- Typing indicator (htmx shows this while the POST is in-flight) -->
+<div
+  id="typing-indicator"
+  class="htmx-indicator flex items-center gap-2 px-6 py-2 shrink-0"
+>
+  <div class="avatar placeholder">
+    <div class="bg-[#59c1cc] text-white rounded-full w-7">
+      <span class="text-xs">AI</span>
+    </div>
+  </div>
+  <span class="loading loading-dots loading-sm text-primary"></span>
+</div>
+
+<!-- Input form -->
+<div class="shrink-0 px-4 py-3 border-t border-[#374151] bg-[#111827]">
+  <form
+    id="chat-form"
+    hx-post="/threads/<%= activeThreadId %>/messages"
+    hx-target="#messages"
+    hx-swap="beforeend"
+    hx-indicator="#typing-indicator"
+    hx-on::after-request="this.reset(); scrollToBottom();"
+    class="flex items-end gap-2"
+  >
+    <textarea
+      name="message"
+      rows="1"
+      placeholder="Type a message…"
+      class="textarea textarea-bordered flex-1 resize-none text-sm leading-relaxed"
+      required
+      onkeydown="handleKey(event)"
+    ></textarea>
+    <button type="submit" class="btn btn-primary btn-square shrink-0">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </form>
+</div>
+
+<script>
+  /** Scroll the messages pane to the bottom. */
+  function scrollToBottom() {
+    const el = document.getElementById('messages');
+    if (el) el.scrollTop = el.scrollHeight;
+  }
+
+  /** Submit on Enter (without Shift); Shift+Enter = newline. */
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      document.getElementById('chat-form').requestSubmit();
+    }
+  }
+
+  // Scroll to bottom on initial page load
+  scrollToBottom();
+
+  // Also scroll after htmx settles (new message pair appended)
+  document.addEventListener('htmx:afterSettle', function(e) {
+    if (e.detail.target && e.detail.target.id === 'messages') {
+      scrollToBottom();
+    }
+  });
+</script>

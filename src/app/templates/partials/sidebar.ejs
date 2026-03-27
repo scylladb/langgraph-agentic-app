@@ -1,0 +1,54 @@
+<aside class="flex flex-col w-[18%] h-full bg-[#1f2937] border-r border-[#374151] shrink-0 overflow-hidden">
+
+  <!-- Logo / Brand -->
+  <div class="px-3 py-3 border-b border-[#374151] shrink-0">
+    <div class="flex flex-col items-center gap-1">
+      <img src="/public/scylla-logo.png" alt="ScyllaDB" class="h-8 w-auto" />
+      <span class="font-bold text-sm tracking-wide text-[#f3f4f6] text-center leading-snug">ScyllaDB + LangGraph DEMO</span>
+    </div>
+  </div>
+
+  <!-- New Chat button -->
+  <div class="px-2 pt-3 pb-2 shrink-0">
+    <form action="/threads" method="post">
+      <button
+        type="submit"
+        class="btn btn-primary btn-sm w-full gap-2 overflow-hidden"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        <span class="truncate">New chat</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- Thread list -->
+  <nav class="flex-1 overflow-y-auto px-1 py-1 min-w-0">
+    <% if (threads.length === 0) { %>
+      <p class="text-xs text-[#9ca3af] px-2 py-4 text-center truncate">No conversations yet</p>
+    <% } else { %>
+      <ul class="menu menu-sm gap-0.5 p-0">
+        <% threads.slice().reverse().forEach(function(t) { %>
+          <li class="min-w-0">
+            <a
+              href="/threads/<%= t.id %>"
+              class="<%= t.id === activeThreadId ? 'active' : '' %> flex items-start gap-2 rounded-lg py-2 px-2 text-sm leading-snug min-w-0 text-[#d1d5db]"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 shrink-0 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              <span class="truncate min-w-0"><%= t.title %></span>
+            </a>
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
+  </nav>
+
+  <!-- Footer note -->
+  <div class="px-3 py-3 border-t border-[#374151] shrink-0 min-w-0">
+    <p class="text-xs text-[#9ca3af] break-words">Conversations persist in ScyllaDB</p>
+  </div>
+
+</aside>

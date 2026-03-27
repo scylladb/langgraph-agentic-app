@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LangGraph Chat<% if (activeTitle) { %> — <%- activeTitle %><% } %></title>
+
+  <!-- daisyUI (CDN) — component styles + theme system -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/daisyui@4/dist/full.min.css"
+    rel="stylesheet"
+    type="text/css"
+  />
+  <!-- Tailwind (CDN play script) — utility classes -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- htmx -->
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js" integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F" crossorigin="anonymous"></script>
+
+  <style>
+    /* ensure the page and sidebar fill the full viewport height */
+    html, body { height: 100%; margin: 0; }
+    #messages { scroll-behavior: smooth; }
+
+    /* ── ScyllaDB brand color overrides (dark mode) ───────────────────── */
+    [data-theme="dark"] {
+      /* primary = Scylla teal #59c1cc */
+      --color-primary: oklch(76.5% 0.089 196);
+      --color-primary-content: oklch(15% 0.03 196);
+
+      /* page & panel backgrounds */
+      --color-base-100: #111827;
+      --color-base-200: #1f2937;
+      --color-base-300: #374151;
+      --color-base-content: #f3f4f6;
+
+      /* neutral (AI avatar) = dark teal */
+      --color-neutral: oklch(44% 0.085 196);
+      --color-neutral-content: oklch(100% 0 0);
+    }
+
+    /* Sidebar active thread highlight */
+    .menu li a.active {
+      background-color: #0f6a73;
+      color: #e6f7f9;
+      font-weight: 600;
+    }
+    .menu li a:hover:not(.active) {
+      background-color: #1a3a3e;
+      color: #6dd5de;
+    }
+
+    /* Input border focus ring in teal */
+    .textarea:focus {
+      outline: 2px solid #59c1cc;
+      outline-offset: 0;
+      border-color: #59c1cc;
+    }
+  </style>
+</head>
+<body class="flex h-full overflow-hidden bg-[#111827] text-[#f3f4f6]">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
+  <%- include('partials/sidebar', { threads, activeThreadId }) %>
+
+  <!-- ── Main chat area ─────────────────────────────────────────────────── -->
+  <main class="flex flex-col flex-1 min-w-0 h-full">
+
+    <!-- Header -->
+    <header class="flex items-center gap-3 px-6 py-3 border-b border-[#374151] shrink-0 bg-[#111827]">
+      <% if (activeTitle) { %>
+        <h1 class="text-lg font-semibold truncate text-[#f3f4f6]"><%- activeTitle %></h1>
+      <% } else { %>
+        <h1 class="text-lg font-semibold text-[#6b7280]">Select or start a conversation</h1>
+      <% } %>
+    </header>
+
+    <!-- Messages -->
+    <% if (activeThreadId) { %>
+      <%- include('partials/chat', { messages, activeThreadId }) %>
+    <% } else { %>
+      <div class="flex flex-1 items-center justify-center text-[#9ca3af] text-sm select-none">
+        <div class="text-center space-y-2">
+          <p class="text-4xl">💬</p>
+          <p>Click <strong>New chat</strong> to begin</p>
+        </div>
+      </div>
+    <% } %>
+
+  </main>
+
+  <!-- ── Right panel ────────────────────────────────────────────────────── -->
+  <%- include('partials/right-panel', { cqlQueries, schemaHtml }) %>
+
+</body>
+</html>

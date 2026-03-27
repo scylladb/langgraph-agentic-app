@@ -1,0 +1,29 @@
+{
+  "name": "langgraph-scylladb-demo",
+  "version": "1.0.0",
+  "description": "LangGraph multi-turn chatbot with ScyllaDB Cloud checkpointing",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/demo.ts",
+    "migrate": "tsx src/migrate.ts",
+    "sample": "tsx src/sample.ts",
+    "dev": "tsx src/app/server.ts"
+  },
+  "dependencies": {
+    "@gbyte.tech/langgraph-checkpoint-scylladb": "*",
+    "@langchain/core": "*",
+    "@langchain/groq": "*",
+    "@langchain/langgraph": "*",
+    "@langchain/langgraph-checkpoint": "*",
+    "cassandra-driver": "*",
+    "dotenv": "*",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "*",
+    "tsx": "*",
+    "typescript": "*"
+  }
+}

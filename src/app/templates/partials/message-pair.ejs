@@ -1,0 +1,25 @@
+<!-- User bubble -->
+<div class="chat chat-end">
+  <div class="chat-bubble chat-bubble-primary text-sm whitespace-pre-wrap"><%- userText %></div>
+</div>
+
+<!-- AI bubble -->
+<div class="chat chat-start">
+  <div class="chat-avatar">
+    <div class="avatar placeholder">
+      <div class="bg-[#59c1cc] text-white rounded-full w-8">
+        <span class="text-xs">AI</span>
+      </div>
+    </div>
+  </div>
+  <div class="chat-bubble bg-[#1a3a3e] text-[#e6f7f9] text-sm whitespace-pre-wrap"><%- aiReply %></div>
+</div>
+
+<!-- OOB: append CQL entries in chronological order -->
+<% if (cqlQueries && cqlQueries.length > 0) { %>
+<div id="cql-feed" hx-swap-oob="beforeend">
+  <div class="cql-batch">
+    <% cqlQueries.forEach(function(html) { %><%- html %><% }); %>
+  </div>
+</div>
+<% } %>
