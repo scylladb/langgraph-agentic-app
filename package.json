@@ -7,7 +7,7 @@
     "start": "tsx src/demo.ts",
     "migrate": "tsx src/migrate.ts",
     "sample": "tsx src/sample.ts",
-    "dev": "tsx src/app/server.ts"
+    "dev": "NODE_OPTIONS='--no-deprecation' tsx src/app/server.ts"
   },
   "dependencies": {
     "@gbyte.tech/langgraph-checkpoint-scylladb": "*",
