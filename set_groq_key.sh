@@ -6,7 +6,7 @@ echo
 
 # Update or add GROQ_API_KEY in .env file
 if [ -f .env ] && grep -q "^GROQ_API_KEY=" .env; then
-    sed -i "s/^GROQ_API_KEY=.*/GROQ_API_KEY=${groq_key}/" .env
+    sed -i "s|^GROQ_API_KEY=.*|GROQ_API_KEY=${groq_key}|" .env
 else
     echo "GROQ_API_KEY=${groq_key}" >> .env
 fi
